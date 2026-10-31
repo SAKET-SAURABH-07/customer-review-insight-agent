@@ -3,14 +3,14 @@
 Feedback intelligence agent for mobile applications:
 **Collect reviews $\rightarrow$ Sentiment classification $\rightarrow$ Operational topic tagging $\rightarrow$ Anomaly spike alerts & interactive dashboard.**
 
-[![GitHub Pages Deployment](https://img.shields.io/badge/Demo-GitHub%20Pages-brightgreen)](https://<username>.github.io/<repo>/)
+[![GitHub Pages Deployment](https://img.shields.io/badge/Demo-GitHub%20Pages-brightgreen)](https://saket-saurabh-07.github.io/customer-review-insight-agent/)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![Playwright](https://img.shields.io/badge/collector-Playwright%20Chromium-orange.svg)](https://playwright.dev/)
 
 ---
 
 ## Static Web Dashboard
-- **Live Demo Link:** `https://<username>.github.io/<repo>/` *(Replace with your GitHub username and repository name)*
+- **Live Demo Link:** `https://saket-saurabh-07.github.io/customer-review-insight-agent/`
 - **Data Coverage:** **Dec 2020 – Mar 2021 (Historical Archive of 7,204 Google Chrome Play Store reviews).** This dashboard displays a historical analysis batch, not live real-time streams.
 - **Client Architecture:** Static single-page dashboard built with pure HTML5, CSS3, and native HTML5 Canvas 2D charts (no external charting dependencies, zero build step, zero hosting fees).
 
@@ -110,8 +110,8 @@ Keywords target actionable software engineering areas (generic praise like "good
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/<username>/<repo>.git
-cd <repo>
+git clone https://github.com/SAKET-SAURABH-07/customer-review-insight-agent.git
+cd customer-review-insight-agent
 
 # 2. Install dependencies (including Playwright)
 pip install -r requirements.txt
