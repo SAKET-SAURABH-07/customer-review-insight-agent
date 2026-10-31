@@ -63,12 +63,12 @@
 
     <!-- Visual Charts Grid -->
     <section class="charts-grid">
-      <!-- Weekly Sentiment Trend Chart -->
+      <!-- Weekly / Batch Sentiment Trend Chart -->
       <div class="chart-card">
         <div class="chart-header">
           <div>
-            <h2>Weekly Sentiment Trend</h2>
-            <p class="chart-sub">Positive vs. Negative sentiment rate across recent weeks</p>
+            <h2 id="trendChartTitle">Weekly Sentiment Trend</h2>
+            <p class="chart-sub" id="trendChartSub">Positive vs. Negative sentiment rate across recent periods</p>
           </div>
           <div class="chart-legend">
             <span class="legend-item"><span class="legend-dot dot-pos"></span> Positive %</span>
@@ -84,7 +84,7 @@
       <div class="chart-card">
         <div class="chart-header">
           <div>
-            <h2>Topic Complaint Breakdown</h2>
+            <h2>App Topic Complaint Breakdown</h2>
             <p class="chart-sub">Negative complaint volume categorized by operational bucket</p>
           </div>
         </div>
@@ -104,11 +104,13 @@
         <div class="table-controls">
           <select id="topicFilter">
             <option value="all">All Topics</option>
-            <option value="app/bugs">App / Bugs</option>
-            <option value="support">Support</option>
-            <option value="quality">Quality</option>
-            <option value="price">Price</option>
-            <option value="delivery">Delivery</option>
+            <option value="crashes/bugs">Crashes / Bugs</option>
+            <option value="updates">Updates</option>
+            <option value="speed/performance">Speed / Performance</option>
+            <option value="login/sync">Login / Sync</option>
+            <option value="battery/data">Battery / Data</option>
+            <option value="ads">Ads</option>
+            <option value="privacy">Privacy</option>
             <option value="other">Other</option>
           </select>
           <div class="sentiment-buttons">

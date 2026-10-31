@@ -60,6 +60,15 @@ function renderHeaderAndKPIs(data) {
     alertsEl.style.color = "#f87171";
   }
 
+  if (data.trend_title) {
+    const titleEl = document.getElementById("trendChartTitle");
+    if (titleEl) titleEl.textContent = data.trend_title;
+  }
+  if (data.trend_sub) {
+    const subEl = document.getElementById("trendChartSub");
+    if (subEl) subEl.textContent = data.trend_sub;
+  }
+
   document.getElementById("executiveSummaryText").textContent =
     data.executive_summary || "Automated customer review insights loaded successfully.";
 
@@ -167,13 +176,17 @@ function renderTrendChart(trends) {
   // Draw Negative Trend Line (Red)
   drawLine("neg_pct", "#f87171");
 
-  // Draw X axis week labels
+  // Draw X axis labels (weeks or batches)
   ctx.fillStyle = "#94a3b8";
   ctx.textAlign = "center";
   trends.forEach((item, i) => {
     const x = padLeft + i * stepX;
-    // Shorten week display, e.g. "2020-W50" -> "W50"
-    const lbl = (item.week || "").replace(/^\d{4}-/, "");
+    let lbl = item.period || "";
+    if (lbl.includes("/")) {
+      lbl = lbl.split("/")[0].slice(5);
+    } else {
+      lbl = lbl.replace(/^\d{4}-/, "");
+    }
     ctx.fillText(lbl, x, h - 14);
   });
 }
@@ -194,10 +207,10 @@ function renderTopicChart(topics) {
   ctx.clearRect(0, 0, w, h);
 
   // Exclude 'other' from pure complaint view if desired, or show top topics
-  const displayTopics = topics.slice(0, 5);
+  const displayTopics = topics.filter(t => t.topic !== "other").slice(0, 6);
   const maxNeg = Math.max(...displayTopics.map(t => t.negative), 10);
 
-  const padLeft = 85;
+  const padLeft = 125;
   const padRight = 50;
   const padTop = 20;
   const padBottom = 20;
