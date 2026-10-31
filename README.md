@@ -1,80 +1,108 @@
 # Customer Review Insight Agent
 
-Autonomous end-to-end customer feedback intelligence agent:
-**Collect reviews $\rightarrow$ Sentiment per review $\rightarrow$ Operational topic tagging $\rightarrow$ Weekly report $\rightarrow$ Automated spike alerts & live dashboard.**
+Feedback intelligence agent for mobile applications:
+**Collect reviews $\rightarrow$ Sentiment classification $\rightarrow$ Operational topic tagging $\rightarrow$ Anomaly spike alerts & interactive dashboard.**
 
-[![GitHub Pages Deployment](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-brightgreen)](https://<username>.github.io/<repo>/)
+[![GitHub Pages Deployment](https://img.shields.io/badge/Demo-GitHub%20Pages-brightgreen)](https://<username>.github.io/<repo>/)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Playwright](https://img.shields.io/badge/collector-Playwright%20Chromium-orange.svg)](https://playwright.dev/)
 
 ---
 
-## Live Demo & Dashboard
+## Static Web Dashboard
 - **Live Demo Link:** `https://<username>.github.io/<repo>/` *(Replace with your GitHub username and repository name)*
-- **Static Architecture:** Single-page dashboard built with pure HTML5, CSS3, and vanilla Canvas 2D charts (zero framework overhead, zero build step, 100% serverless).
+- **Data Coverage:** **Dec 2020 – Mar 2021 (Historical Archive of 7,204 Google Chrome Play Store reviews).** This dashboard displays a historical analysis batch, not live real-time streams.
+- **Client Architecture:** Static single-page dashboard built with pure HTML5, CSS3, and native HTML5 Canvas 2D charts (no external charting dependencies, zero build step, zero hosting fees).
 
 ```
 +------------------------------------------------------------------------+
-| 📊 Customer Review Insight Agent                     [Live Insights]   |
+| 📊 Customer Review Insight Agent   [Period: Dec 2020 - Mar 2021]       |
 +------------------------------------------------------------------------+
 | Executive Summary: 7,204 reviews analyzed | 62.8% Pos | 31.0% Neg     |
-| Leading Complaint Driver: app/bugs | Status: All Systems Nominal       |
+| Leading Complaint Driver: updates | Status: All Systems Nominal        |
 +------------------------------------------------------------------------+
 | [Total: 7,204]   [Positive: 62.8%]   [Negative: 31.0%]   [Alerts: 0]   |
 +-----------------------------------+------------------------------------+
-| 📈 Weekly Sentiment Trend (Canvas)| 🏷️ Topic Complaints (Canvas)       |
-|  - - - Positive % (Emerald)       |   app/bugs  [████████████] 1,440   |
-|  - - - Negative % (Rose Red)      |   support   [██] 49                |
+| 📈 Weekly Sentiment Trend (Canvas)| 🏷️ Topic Complaints (Negative Only)|
+|  - - - Positive % (Emerald)       |   updates      [██████████] 1,244  |
+|  - - - Negative % (Rose Red)      |   crashes/bugs [████] 421          |
+|                                   |   login/sync   [█] 173             |
 +-----------------------------------+------------------------------------+
-| Audited Customer Reviews (Gibberish Filtered, Filterable by Topic/Sent)|
+| Audited Customer Reviews (Max 100 char excerpts, Filterable by Topic)  |
 +------------------------------------------------------------------------+
 ```
 
 ---
 
-## System Architecture
+## Data Source, Licensing & Privacy
+
+- **Source:** Historical Google Chrome Android user reviews from `amarshikhar/Classify-reviews` (`chrome_reviews.csv`).
+- **License Status:** **No explicit license (Unlicensed / All Rights Reserved)** in the source repository. Additionally, Section 4 of the **Google Play Terms of Service** prohibits unauthorized commercial reproduction or redistribution of user content.
+- **Compliance Policy:** Because of these licensing and privacy constraints, the raw 7,204-row dataset (`data/real_reviews.csv`) is **excluded from Git tracking via `.gitignore`**. The repository tracks only:
+  1. The aggregated, anonymized metrics (`dashboard/data/insights.json`).
+  2. 50 completely synthetic review examples (`data/sample_reviews.csv`) for CI testing and unit verification.
+- **How to Download the Dataset Locally:**
+  To reproduce the full 7,204-review training and evaluation on your local machine, run:
+  ```bash
+  python -c "import urllib.request, pandas as pd; url='https://raw.githubusercontent.com/amarshikhar/Classify-reviews/master/chrome_reviews.csv'; pd.read_csv(url).to_csv('data/real_reviews.csv', index=False); print('Saved data/real_reviews.csv')"
+  ```
+
+---
+
+## System Architecture & Data Flow
 
 ```mermaid
 flowchart TD
-    A["Raw Customer Reviews<br/>(Play Store / Amazon / CSV)"] --> B["Flexible Ingestion Layer<br/>(data_loader.py)"]
-    B --> C["Sentiment Classifier<br/>(TF-IDF + Logistic Regression)"]
-    B --> D["Operational Topic Tagger<br/>(topics.py)"]
-    C & D --> E["Weekly Analytics & Anomaly Engine<br/>(report.py)"]
-    E --> F["Z-Score Complaint Surge Detector"]
-    E --> G["insights.json / insights.js"]
-    G --> H["Static Web Dashboard<br/>(dashboard/index.html)"]
-    H --> I["GitHub Pages Hosting"]
-    J["GitHub Actions Cron<br/>(weekly.yml)"] -.->|Auto-Regenerates Every Mon| E
+    subgraph Data Acquisition
+        A["Playwright Scraper<br/>(collector.py)"] -->|checks robots.txt| B["SQLite Database<br/>(data/reviews.db)"]
+        C["Local CSV Archive<br/>(data/real_reviews.csv)"] --> D["Flexible Loader<br/>(data_loader.py)"]
+    end
+
+    subgraph Analytics & Modeling
+        D --> E["Sentiment Classifier<br/>(TF-IDF + Logistic Regression)"]
+        D --> F["Operational Topic Tagger<br/>(topics.py)"]
+        B -.->|--from-db| G["Weekly Analytics & Anomaly Engine<br/>(report.py)"]
+        E & F --> G
+        G --> H["Z-Score Complaint Surge Detector"]
+    end
+
+    subgraph Presentation & Deployment
+        G --> I["insights.json / insights.js"]
+        I --> J["Static HTML/Canvas Dashboard<br/>(dashboard/index.html)"]
+        J --> K["GitHub Pages Hosting"]
+    end
 ```
 
----
-
-## Core Components
-
-1. **Flexible Ingestion (`data_loader.py`)**
-   - Automatically detects text and rating columns across Kaggle, Amazon, Flipkart, and Play Store schemas.
-   - Maps 1–2 stars $\rightarrow$ negative, 3 stars $\rightarrow$ neutral, 4–5 stars $\rightarrow$ positive.
-   - Preserves timestamps for week-over-week temporal intelligence.
-2. **Sentiment Model (`train_sentiment.py`)**
-   - Evaluated on 7,204 real Google Play Store user reviews with an 80/20 stratified split.
-   - TF-IDF (unigrams + bigrams) + Class-balanced Logistic Regression.
-   - Honest test accuracy: **75.02%** (macro F1: 0.54, weighted F1: 0.76).
-3. **Operational Topic Tagging (`topics.py`)**
-   - Deterministic keyword-rules classifying reviews into operational categories: `app/bugs`, `support`, `quality`, `price`, `delivery`, and `other`.
-4. **Insights Engine & Spike Detector (`report.py`)**
-   - Calculates weekly sentiment rates and topic volume.
-   - Employs a transparent z-score threshold ($Z \ge 1.3$) to detect negative complaint surges.
-   - Exports `dashboard/data/insights.json` (and `insights.js` fallback).
-5. **Static Analytics Dashboard (`dashboard/`)**
-   - Standalone client-side application with vanilla Canvas charts and dynamic review filtering.
+### End-to-End Pipeline Execution:
+1. **Collector (`collector.py`):** Uses Playwright headless Chromium with `robots.txt` compliance and rate-limiting. Note: `books.toscrape.com` is used as a scraping sandbox to verify automated headless browser navigation safely. Records are stored in SQLite (`data/reviews.db`).
+2. **Database to Report Flow (`report.py --from-db`):** Reads records directly from `data/reviews.db`, standardizes labels, applies topic tagging, and outputs dashboard analytics.
+3. **Primary Archive Flow (`report.py`):** Aggregates the 7,204 Chrome reviews across calendar weeks, detects complaint spikes, and publishes `dashboard/data/insights.json`.
 
 ---
 
-## Known Limitations
+## Topic Tagging Breakdown
 
-1. **75.0% Accuracy Ceiling:** Linear TF-IDF n-gram models cannot fully resolve nuanced human language, complex double negations, or heavy sarcasm.
-2. **Weak Neutral Class Representation (F1: 0.06):** In customer reviews, 3-star ratings often mix polarized sentiments (e.g., *"great app but battery drains fast"*) or express vague indifference, making pure bag-of-words classification noisy.
-3. **Domain Transfer:** The keyword topic dictionary is optimized for software/retail reviews; migrating to specialized domains (e.g., fintech/healthcare) requires domain-specific keyword extensions.
+Keywords target actionable software engineering areas (generic praise like "good" or "nice" is excluded):
+
+| Topic Bucket | Negative Complaints (1–2 Stars) | Primary Triggers |
+| :--- | :---: | :--- |
+| **updates** | **1,244** | `update`, `download`, `install`, `version`, `pending`, `stuck` |
+| **crashes/bugs** | **421** | `crash`, `freeze`, `blank screen`, `force close`, `error`, `bug` |
+| **login/sync** | **173** | `sync`, `account`, `bookmarks`, `tabs`, `login`, `history` |
+| **speed/performance** | **123** | `lag`, `slow`, `sluggish`, `ram`, `memory`, `loading` |
+| **battery/data** | **51** | `battery drain`, `heat`, `mobile data`, `wifi`, `bandwidth` |
+| **privacy** | **36** | `tracking`, `permissions`, `incognito`, `spyware`, `cookies` |
+| **ads** | **26** | `popups`, `banners`, `spam`, `commercials` |
+| *other / unclassified* | *669 (30.0%)* | Short feedback without specific feature keywords |
+
+---
+
+## Honest Project Limitations
+
+1. **75.0% Classification Accuracy:** Linear TF-IDF n-gram models cannot resolve nuanced human language, complex double negations, or heavy sarcasm.
+2. **Weak Neutral Class Representation (F1: 0.06):** In customer feedback, 3-star ratings often combine mixed positive and negative comments (e.g., *"great app but battery drains fast"*), making bag-of-words classification noisy.
+3. **Single App Dataset:** The pipeline is tuned on Google Chrome Android reviews. Transferring to fintech or e-commerce requires updating the keyword dictionary in `topics.py`.
+4. **No Automated CI Data Ingestion:** The GitHub Actions cron schedule is disabled because GitHub Actions cannot scrape third-party platforms without violating rate limits or platform terms. The workflow is restricted to manual triggers (`workflow_dispatch`) with safety checks preventing sample data overwrites.
 
 ---
 
@@ -85,13 +113,22 @@ flowchart TD
 git clone https://github.com/<username>/<repo>.git
 cd <repo>
 
-# 2. Install dependencies
+# 2. Install dependencies (including Playwright)
 pip install -r requirements.txt
+playwright install chromium
 
-# 3. Regenerate insights
+# 3. (Optional) Run Playwright Review Collector to SQLite
+python collector.py
+# Verify report generation from SQLite:
+python report.py --from-db
+
+# 4. Generate clean baseline insights from the 7,204-review archive
 python report.py
 
-# 4. Preview dashboard locally
+# 5. Test anomaly detection (writes to temp path, leaving dashboard intact):
+python report.py --inject-spike login/sync
+
+# 6. Preview dashboard locally
 cd dashboard
 python -m http.server 8000
 # Open http://localhost:8000 in your browser

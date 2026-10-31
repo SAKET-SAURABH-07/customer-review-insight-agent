@@ -2,21 +2,26 @@
 topics.py - App-relevant keyword topic tagger for customer reviews.
 
 Tags each review with one or more operational software topics:
-- crashes/bugs
-- updates
-- login/sync
-- ads
-- speed/performance
-- battery/data
-- privacy
+- crashes/bugs   : app failures, errors, blank screens
+- updates        : install, version, download issues
+- speed/performance : lag, slow, memory, loading times
+- login/sync     : accounts, bookmarks, tabs, history
+- ads            : pop-ups, banners, spam
+- battery/data   : drain, wifi, network, pages
+- privacy        : tracking, incognito, permissions
 
-Why app-specific dictionaries?
-E-commerce topics (delivery, price) don't apply to mobile app feedback.
-Tailoring regex keywords to software telemetry allows direct mapping to engineering backlogs.
+Why keyword rules?
+They are deterministic, instantly auditable, and map directly to engineering
+backlogs without needing model training. Generic praise words (good, nice, ok)
+are deliberately excluded — they carry no actionable topic signal.
 """
 
 import re
 import pandas as pd
+
+# --- Topic keyword dictionaries (app-specific) ---
+# Only words that point to a *specific operational area*.
+# Generic sentiment words (good, nice, best, love) are NOT topics.
 
 TOPIC_KEYWORDS = {
     "crashes/bugs": [
@@ -28,51 +33,57 @@ TOPIC_KEYWORDS = {
         r"\bissue\b", r"\bissues\b", r"\bfix\b", r"\bfixes\b", r"\bfixing\b", r"\bnot open\b", r"\bwon'?t open\b",
         r"\bcan'?t open\b", r"\bdoesn'?t open\b", r"\bunable to open\b", r"\bblank\b", r"\bblack screen\b",
         r"\bwhite screen\b", r"\bauto close\b", r"\bcloses\b", r"\bclosing\b", r"\bshutting\b", r"\bshut down\b",
-        r"\btrouble\b", r"\bterrible\b", r"\bworst\b", r"\bworse\b", r"\buseless\b", r"\bgarbage\b", r"\bbad\b",
-        r"\btrash\b", r"\bawful\b", r"\bhorrible\b", r"\bpoor\b", r"\bdisappoint\w*\b", r"\bhate\b"
+        r"\btrouble\b"
     ],
     "updates": [
-        r"\bupdate\b", r"\bupdates\b", r"\bupdated\b", r"\bupdating\b", r"\bupdation\b", r"\bversion\b", r"\bversions\b",
-        r"\bdownload\b", r"\bdownloads\b", r"\bdownloading\b", r"\bdownloaded\b", r"\binstall\b", r"\binstalls\b",
-        r"\binstalling\b", r"\binstalled\b", r"\binstallation\b", r"\buninstall\b", r"\buninstalling\b", r"\buninstalled\b",
-        r"\bupgrade\b", r"\bupgrading\b", r"\bdowngrade\b", r"\bold version\b", r"\bnew version\b", r"\blatest version\b",
-        r"\bpending\b", r"\bstuck\b", r"\b99%\b", r"\b100%\b", r"\bplay store\b"
+        r"\bupdate\b", r"\bupdates\b", r"\bupdated\b", r"\bupdating\b", r"\bupdation\b",
+        r"\bversion\b", r"\bversions\b",
+        r"\bdownload\b", r"\bdownloads\b", r"\bdownloading\b", r"\bdownloaded\b",
+        r"\binstall\b", r"\binstalls\b", r"\binstalling\b", r"\binstalled\b", r"\binstallation\b",
+        r"\buninstall\b", r"\buninstalling\b", r"\buninstalled\b",
+        r"\bupgrade\b", r"\bupgrading\b", r"\bdowngrade\b",
+        r"\bold version\b", r"\bnew version\b", r"\blatest version\b",
+        r"\bpending\b", r"\bstuck\b", r"\bplay store\b"
     ],
     "speed/performance": [
-        r"\bslow\b", r"\bslower\b", r"\bslowest\b", r"\bspeed\b", r"\bspeedy\b", r"\bfast\b", r"\bfaster\b", r"\bfastest\b",
-        r"\bquick\b", r"\bquickly\b", r"\blag\b", r"\blags\b", r"\blagging\b", r"\blaggy\b", r"\bsluggish\b",
-        r"\bdelay\b", r"\bdelays\b", r"\bdelayed\b", r"\bperformance\b", r"\bloading\b", r"\bload\b", r"\bloads\b",
-        r"\bresponse\b", r"\bresponsive\b", r"\bheavy\b", r"\blight\b", r"\blightweight\b", r"\bram\b", r"\bmemory\b",
-        r"\bspace\b", r"\bstorage\b", r"\bsmooth\b", r"\bsmoothly\b", r"\bfluid\b", r"\bcache\b",
-        r"\bbrowse\b", r"\bbrowser\b", r"\bbrowsing\b", r"\bsearch\b", r"\bsearching\b", r"\bsurf\b", r"\bsurfing\b",
-        r"\bworks? fine\b", r"\bworks? good\b", r"\bworks? great\b", r"\bworks? well\b", r"\beasy\b", r"\beasy to use\b",
-        r"\buseful\b", r"\bhelpful\b", r"\bexperience\b", r"\bfeature\b", r"\bfeatures\b",
-        r"\bgood\b", r"\bnice\b", r"\bgreat\b", r"\bbest\b", r"\bexcellent\b", r"\bawesome\b", r"\bsuper\b", r"\bcool\b",
-        r"\blove\b", r"\blike it\b", r"\bok\b", r"\bokay\b"
+        # Actual performance vocabulary only — no generic praise
+        r"\bslow\b", r"\bslower\b", r"\bslowest\b", r"\bspeed\b", r"\bspeedy\b",
+        r"\bfast\b", r"\bfaster\b", r"\bfastest\b",
+        r"\blag\b", r"\blags\b", r"\blagging\b", r"\blaggy\b", r"\bsluggish\b",
+        r"\bdelay\b", r"\bdelays\b", r"\bdelayed\b",
+        r"\bperformance\b", r"\bloading\b", r"\bloads\b",
+        r"\bresponsive\b", r"\bheavy\b", r"\blightweight\b",
+        r"\bram\b", r"\bmemory\b", r"\bstorage\b", r"\bsmooth\b", r"\bsmoothly\b",
+        r"\bcache\b", r"\bfluid\b"
     ],
     "login/sync": [
         r"\bsync\b", r"\bsyncing\b", r"\bsynced\b", r"\bsynchronize\b", r"\bsynchronizing\b",
-        r"\blogin\b", r"\blog in\b", r"\blogged in\b", r"\blogging in\b", r"\bsign in\b", r"\bsigned in\b", r"\bsigning in\b",
-        r"\baccount\b", r"\baccounts\b", r"\bpassword\b", r"\bpasswords\b", r"\bbookmark\b", r"\bbookmarks\b",
-        r"\bprofile\b", r"\bgoogle account\b", r"\bgmail\b", r"\bemail\b", r"\bhistory\b", r"\btabs\b", r"\btab\b",
-        r"\btab group\b", r"\bgrid\b"
+        r"\blogin\b", r"\blog in\b", r"\blogged in\b", r"\blogging in\b",
+        r"\bsign in\b", r"\bsigned in\b", r"\bsigning in\b",
+        r"\baccount\b", r"\baccounts\b", r"\bpassword\b", r"\bpasswords\b",
+        r"\bbookmark\b", r"\bbookmarks\b", r"\bprofile\b",
+        r"\bgoogle account\b", r"\bgmail\b",
+        r"\bhistory\b", r"\btabs\b", r"\btab\b", r"\btab group\b"
     ],
     "ads": [
-        r"\bad\b", r"\bads\b", r"\badvert\b", r"\badverts\b", r"\badvertisement\b", r"\badvertisements\b",
-        r"\badvertising\b", r"\bpop-up\b", r"\bpop-ups\b", r"\bpopup\b", r"\bpopups\b", r"\bpop up\b", r"\bpop ups\b",
-        r"\bspam\b", r"\bcommercial\b", r"\bcommercials\b", r"\bbanner\b", r"\bbanners\b", r"\bsponsor\b", r"\bsponsored\b"
+        r"\bads\b", r"\badvert\b", r"\badverts\b",
+        r"\badvertisement\b", r"\badvertisements\b", r"\badvertising\b",
+        r"\bpop-?ups?\b", r"\bpopups?\b",
+        r"\bspam\b", r"\bbanner\b", r"\bbanners\b"
     ],
     "battery/data": [
-        r"\bbattery\b", r"\bdrain\b", r"\bdraining\b", r"\bdrained\b", r"\bdrains\b", r"\bpower\b", r"\bcharge\b",
-        r"\bcharging\b", r"\bconsumption\b", r"\bheat\b", r"\bheating\b", r"\bhot\b", r"\boverheat\b",
-        r"\bdata\b", r"\bmobile data\b", r"\bwifi\b", r"\bwi-fi\b", r"\binternet\b", r"\bnet\b", r"\bnetwork\b",
-        r"\bconnection\b", r"\bconnect\b", r"\bconnecting\b", r"\boffline\b", r"\bbandwidth\b", r"\bpage\b", r"\bpages\b",
-        r"\bsite\b", r"\bsites\b", r"\bwebsite\b", r"\bwebsites\b"
+        r"\bbattery\b", r"\bdrain\b", r"\bdraining\b", r"\bdrained\b", r"\bdrains\b",
+        r"\bpower\b", r"\bcharge\b", r"\bcharging\b",
+        r"\bheat\b", r"\bheating\b", r"\boverheat\b",
+        r"\bmobile data\b", r"\bwifi\b", r"\bwi-fi\b",
+        r"\binternet\b", r"\bnetwork\b", r"\bconnection\b", r"\boffline\b"
     ],
     "privacy": [
-        r"\bprivacy\b", r"\bprivate\b", r"\btrack\b", r"\btracking\b", r"\btracker\b", r"\btrackers\b",
-        r"\bpermission\b", r"\bpermissions\b", r"\bsecure\b", r"\bsecurity\b", r"\bincognito\b",
-        r"\bspy\b", r"\bspying\b", r"\bspyware\b", r"\bdata collection\b", r"\bsafe\b", r"\bsafety\b",
+        r"\bprivacy\b", r"\bprivate\b",
+        r"\btrack\b", r"\btracking\b", r"\btracker\b", r"\btrackers\b",
+        r"\bpermission\b", r"\bpermissions\b",
+        r"\bsecure\b", r"\bsecurity\b", r"\bincognito\b",
+        r"\bspy\b", r"\bspying\b", r"\bspyware\b",
         r"\bsafe browsing\b", r"\bcookies\b"
     ],
 }
@@ -116,12 +127,23 @@ if __name__ == "__main__":
     data = load_dataset()
     tagged = add_topics_to_df(data)
 
-    print("=== New Topic Distribution on App Reviews ===")
+    # Show all-reviews distribution
     all_topics = [t for sublist in tagged["topics"] for t in sublist]
     topic_counts = pd.Series(all_topics).value_counts()
-    print(topic_counts.to_string(), "\n")
 
     total = len(tagged)
     other_count = sum(1 for ts in tagged["topics"] if ts == ["other"])
-    print(f"Total reviews: {total}")
-    print(f"'other' count: {other_count} ({other_count / total * 100:.1f}%)")
+
+    print("=== Topic Distribution (All Reviews) ===")
+    print(topic_counts.to_string())
+    print(f"\nTotal: {total} | 'other': {other_count} ({other_count / total * 100:.1f}%)\n")
+
+    # Show negative-only distribution (what the dashboard chart uses)
+    neg = tagged[tagged["label"] == "negative"]
+    neg_topics = [t for sublist in neg["topics"] for t in sublist]
+    neg_counts = pd.Series(neg_topics).value_counts()
+    neg_other = sum(1 for ts in neg["topics"] if ts == ["other"])
+
+    print("=== Topic Distribution (Negative Reviews Only) ===")
+    print(neg_counts.to_string())
+    print(f"\nNeg total: {len(neg)} | 'other': {neg_other} ({neg_other / len(neg) * 100:.1f}%)")

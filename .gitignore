@@ -29,9 +29,12 @@ secrets.json
 node_modules/
 .npm/
 
-# Raw dataset files (only sample_reviews.csv and insights.json should be tracked)
+# Raw dataset files & temp test outputs
 data/real_reviews.csv
 data/reviews.csv
+data/test_spike_insights.json
+data/*.db
+data/*.sqlite
 
 # OS specific files
 .DS_Store

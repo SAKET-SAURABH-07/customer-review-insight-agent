@@ -1,5 +1,6 @@
 window.INSIGHTS_DATA = {
-  "generated_at": "2026-10-31T18:54:00Z",
+  "generated_at": "2026-10-31T19:00:00Z",
+  "data_period": "Dec 2020 \u2013 Mar 2021 (Historical Archive)",
   "has_real_dates": true,
   "trend_title": "Weekly Sentiment Trend",
   "trend_sub": "Positive vs. Negative sentiment across calendar weeks",
@@ -10,7 +11,7 @@ window.INSIGHTS_DATA = {
     "neutral_pct": 6.3,
     "active_alerts": 0
   },
-  "executive_summary": "Analyzed 7,204 customer reviews. Sentiment stands at 62.8% positive and 31.0% negative. Primary complaint volume driven by 'updates'. Status: 0 active topic surge alert(s).",
+  "executive_summary": "Analyzed 7,204 customer reviews (Dec 2020 \u2013 Mar 2021 (Historical Archive)). Sentiment stands at 62.8% positive and 31.0% negative. Primary complaint volume driven by 'updates'. Status: 0 active topic surge alert(s).",
   "alerts": [],
   "weekly_trends": [
     {
@@ -89,90 +90,90 @@ window.INSIGHTS_DATA = {
   "topic_summary": [
     {
       "topic": "updates",
-      "total": 1601,
-      "positive": 228,
+      "total": 1600,
+      "positive": 227,
       "neutral": 129,
       "negative": 1244,
-      "neg_rate": 77.7
-    },
-    {
-      "topic": "crashes/bugs",
-      "total": 822,
-      "positive": 113,
-      "neutral": 70,
-      "negative": 639,
-      "neg_rate": 77.7
-    },
-    {
-      "topic": "speed/performance",
-      "total": 3582,
-      "positive": 2873,
-      "neutral": 202,
-      "negative": 507,
-      "neg_rate": 14.2
+      "neg_rate": 77.8
     },
     {
       "topic": "other",
-      "total": 1896,
-      "positive": 1400,
-      "neutral": 123,
-      "negative": 373,
-      "neg_rate": 19.7
+      "total": 5005,
+      "positive": 4061,
+      "neutral": 275,
+      "negative": 669,
+      "neg_rate": 13.4
+    },
+    {
+      "topic": "crashes/bugs",
+      "total": 561,
+      "positive": 81,
+      "neutral": 59,
+      "negative": 421,
+      "neg_rate": 75.0
     },
     {
       "topic": "login/sync",
-      "total": 239,
-      "positive": 48,
+      "total": 231,
+      "positive": 46,
       "neutral": 12,
-      "negative": 179,
+      "negative": 173,
       "neg_rate": 74.9
     },
     {
+      "topic": "speed/performance",
+      "total": 308,
+      "positive": 160,
+      "neutral": 25,
+      "negative": 123,
+      "neg_rate": 39.9
+    },
+    {
       "topic": "battery/data",
-      "total": 237,
-      "positive": 69,
-      "neutral": 22,
-      "negative": 146,
-      "neg_rate": 61.6
+      "total": 81,
+      "positive": 23,
+      "neutral": 7,
+      "negative": 51,
+      "neg_rate": 63.0
     },
     {
       "topic": "privacy",
-      "total": 89,
-      "positive": 37,
-      "neutral": 10,
-      "negative": 42,
-      "neg_rate": 47.2
+      "total": 77,
+      "positive": 32,
+      "neutral": 9,
+      "negative": 36,
+      "neg_rate": 46.8
     },
     {
       "topic": "ads",
-      "total": 45,
-      "positive": 5,
+      "total": 35,
+      "positive": 4,
       "neutral": 5,
-      "negative": 35,
-      "neg_rate": 77.8
+      "negative": 26,
+      "neg_rate": 74.3
     }
   ],
   "sample_reviews": [
     {
       "text": "70% Ok so far ,,",
       "label": "positive",
-      "topic": "speed/performance",
+      "topic": "other",
       "date": "2021-02-07"
     },
     {
-      "text": "Nothing is loading on chrome one minute its work then nothing uninstalled and reinstalled cleared data cache and still nothing loads",
+      "text": "Nothing is loading on chrome one minute its work then nothing uninstalled and reinstalled cleared d\u2026",
       "label": "neutral",
       "topic": "updates",
       "date": "2020-12-29"
     },
     {
-      "text": "Used 39% of my battery on my pixel 4a after just 3 minutes of use. Consistently uses so much of my battery. Done using it until this is fixed.",
+      "text": "Used 39% of my battery on my pixel 4a after just 3 minutes of use. Consistently uses so much of my \u2026",
       "label": "negative",
       "topic": "battery/data",
       "date": "2020-12-27"
     },
     {
-      "text": "New update forces tab groups. Even after disabling them they turn back on. I'm perfectly capable or making my own damn tab decisions I don't need y'all doing it for me.",
+      "text": "New update forces tab groups. Even after disabling them they turn back on. I'm perfectly capable or\u2026",
       "label": "negative",
       "topic": "updates",
       "date": "2021-02-02"
@@ -202,7 +203,7 @@ window.INSIGHTS_DATA = {
       "date": "2021-02-02"
     },
     {
-      "text": "Terrible App! I'm Having a same issue! When The Video At Youtube Is Not Working at all, That's Why I'm telling you! I have to restart the IPad for the whole time, Nothing happens! Still Loading On The Video For A Split Second And Disconnected The WIFI! I'm So Sad For Today! Please Fix This ASAP!",
+      "text": "Terrible App! I'm Having a same issue! When The Video At Youtube Is Not Working at all, That's Why \u2026",
       "label": "negative",
       "topic": "crashes/bugs",
       "date": "2021-01-09"
@@ -214,7 +215,7 @@ window.INSIGHTS_DATA = {
       "date": "2021-03-02"
     },
     {
-      "text": "Always depended on Google chrome for everything and loved using it and only used it and since I've gotten this new phone it will not update and it only works half the time if anybody has any ideas that could help please let me know",
+      "text": "Always depended on Google chrome for everything and loved using it and only used it and since I've \u2026",
       "label": "negative",
       "topic": "updates",
       "date": "2021-01-11"
@@ -228,7 +229,7 @@ window.INSIGHTS_DATA = {
     {
       "text": "Super and so helpful",
       "label": "positive",
-      "topic": "speed/performance",
+      "topic": "other",
       "date": "2020-12-22"
     },
     {
@@ -256,7 +257,7 @@ window.INSIGHTS_DATA = {
       "date": "2021-02-26"
     },
     {
-      "text": "Rubbish... Don't bother.... won't install the update...not worth the hassle of clearing cache, switching off phone or dancing naked round a chocolate toffee in the pouring rain....JUST FIX THE UPDATE SO YOU DON'T HAVE TO KEEP MESSING AROUND....",
+      "text": "Rubbish... Don't bother.... won't install the update...not worth the hassle of clearing cache, swit\u2026",
       "label": "negative",
       "topic": "crashes/bugs",
       "date": "2021-02-12"
@@ -268,7 +269,7 @@ window.INSIGHTS_DATA = {
       "date": "2021-01-15"
     },
     {
-      "text": "Works but I've been having this issue where it takes forever to load a page, and when its about to load it crashes and takes me back to the Google search.",
+      "text": "Works but I've been having this issue where it takes forever to load a page, and when its about to \u2026",
       "label": "positive",
       "topic": "crashes/bugs",
       "date": "2020-12-30"
@@ -276,7 +277,7 @@ window.INSIGHTS_DATA = {
     {
       "text": "Its the best app ever",
       "label": "positive",
-      "topic": "speed/performance",
+      "topic": "other",
       "date": "2021-03-01"
     },
     {
@@ -294,7 +295,7 @@ window.INSIGHTS_DATA = {
     {
       "text": "awesome site engine and have so many features which are use in our daily life .",
       "label": "positive",
-      "topic": "speed/performance",
+      "topic": "other",
       "date": "2021-02-03"
     },
     {
@@ -306,7 +307,7 @@ window.INSIGHTS_DATA = {
     {
       "text": "Very very bad using I don't like this aap",
       "label": "positive",
-      "topic": "crashes/bugs",
+      "topic": "other",
       "date": "2021-02-17"
     },
     {
@@ -324,7 +325,7 @@ window.INSIGHTS_DATA = {
     {
       "text": "This app is very useful",
       "label": "positive",
-      "topic": "speed/performance",
+      "topic": "other",
       "date": "2021-02-28"
     },
     {

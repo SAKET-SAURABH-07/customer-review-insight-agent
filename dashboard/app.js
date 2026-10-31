@@ -76,6 +76,11 @@ function renderHeaderAndKPIs(data) {
     const d = new Date(data.generated_at);
     document.getElementById("lastUpdatedBadge").textContent = `Updated: ${d.toLocaleDateString()}`;
   }
+  // Show data coverage period so users know this is historical, not live
+  const periodEl = document.getElementById("dataCoveragePeriod");
+  if (periodEl && data.data_period) {
+    periodEl.textContent = data.data_period;
+  }
 }
 
 function renderAlerts(alerts) {
@@ -291,11 +296,16 @@ function renderReviewsTable() {
       <tr>
         <td><span class="badge badge-topic">${escapeHtml(r.topic)}</span></td>
         <td><span class="badge ${sentimentClass}">${escapeHtml(r.label)}</span></td>
-        <td>${escapeHtml(r.text)}</td>
+        <td>${escapeHtml(truncate(r.text, 100))}</td>
         <td style="color:#64748b; font-size:12px;">${escapeHtml(r.date || "N/A")}</td>
       </tr>
     `;
   }).join("");
+}
+
+function truncate(str, max) {
+  if (!str) return "";
+  return str.length > max ? str.slice(0, max - 1) + "…" : str;
 }
 
 function escapeHtml(str) {
