@@ -1,0 +1,38 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Model binaries (large binary weights)
+models/
+*.joblib
+*.pkl
+
+# Databases and cache
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables & secrets
+.env
+.env.*
+*.key
+*.pem
+secrets.json
+
+# Node / JS dependencies (if any)
+node_modules/
+.npm/
+
+# Raw dataset files (only sample_reviews.csv and insights.json should be tracked)
+data/real_reviews.csv
+data/reviews.csv
+
+# OS specific files
+.DS_Store
+Thumbs.db
